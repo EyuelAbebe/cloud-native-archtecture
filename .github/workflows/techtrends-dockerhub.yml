@@ -34,4 +34,4 @@ jobs:
         context: ./techtrends
         file: ./techtrends/Dockerfile
         push: true
-        tags: techtrends:latest
+        tags: eyueld/techtrends:latest
