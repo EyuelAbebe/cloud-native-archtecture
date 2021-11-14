@@ -1,0 +1,218 @@
+[
+    {
+        "label": "logging",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "logging",
+        "description": "logging",
+        "detail": "logging",
+        "documentation": {}
+    },
+    {
+        "label": "sqlite3",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sqlite3",
+        "description": "sqlite3",
+        "detail": "sqlite3",
+        "documentation": {}
+    },
+    {
+        "label": "sys",
+        "kind": 6,
+        "isExtraImport": true,
+        "importPath": "sys",
+        "description": "sys",
+        "detail": "sys",
+        "documentation": {}
+    },
+    {
+        "label": "Flask",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "flash",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "json",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "jsonify",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "redirect",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "render_template",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "request",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "url_for",
+        "importPath": "flask",
+        "description": "flask",
+        "isExtraImport": true,
+        "detail": "flask",
+        "documentation": {}
+    },
+    {
+        "label": "abort",
+        "importPath": "werkzeug.exceptions",
+        "description": "werkzeug.exceptions",
+        "isExtraImport": true,
+        "detail": "werkzeug.exceptions",
+        "documentation": {}
+    },
+    {
+        "label": "get_db_connection",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def get_db_connection():\n    connection = sqlite3.connect('database.db')\n    connection.row_factory = sqlite3.Row\n    return connection\n# Function to get a post using its ID\ndef get_post(post_id):\n    connection = get_db_connection()\n    post = connection.execute('SELECT * FROM posts WHERE id = ?',\n                        (post_id,)).fetchone()\n    connection.close()",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "get_post",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def get_post(post_id):\n    connection = get_db_connection()\n    post = connection.execute('SELECT * FROM posts WHERE id = ?',\n                        (post_id,)).fetchone()\n    connection.close()\n    return post\n# Define the Flask application\napp = Flask(__name__)\napp.config['SECRET_KEY'] = 'your secret key'\n# Health check",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "health",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def health():\n    response = app.response_class(\n        response=json.dumps({\"result\": \"OK - healthy\"}),\n        status=200,\n        mimetype='application/json'\n    )\n    return response\n# Metrics\n@app.route('/metrics')\ndef metrics():",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "metrics",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def metrics():\n    connection = get_db_connection()\n    post_count = connection.execute('SELECT count(*) as count from posts').fetchone()\n    connection_count = connection.total_changes\n    response = app.response_class(\n        response=json.dumps({'db_connection_count': connection_count, 'post_count': post_count['count']}),\n        status=200,\n        mimetype='application/json'\n    )\n    return response",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "index",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def index():\n    connection = get_db_connection()\n    posts = connection.execute('SELECT * FROM posts').fetchall()\n    connection.close()\n    return render_template('index.html', posts=posts)\n# Define how each individual article is rendered \n# If the post ID is not found a 404 page is shown\n@app.route('/<int:post_id>')\ndef post(post_id):\n    post = get_post(post_id)",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "post",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def post(post_id):\n    post = get_post(post_id)\n    if post is None:\n      logger.info('Page not found.')\n      return render_template('404.html'), 404\n    else:\n      logger.info('Article {} is retrieved'.format(post[\"title\"]))\n      return render_template('post.html', post=post)\n# Define the About Us page\n@app.route('/about')",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "about",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def about():\n    logger.info('About Us page is retrieved.')\n    return render_template('about.html')\n# Define the post creation functionality \n@app.route('/create', methods=('GET', 'POST'))\ndef create():\n    if request.method == 'POST':\n        title = request.form['title']\n        content = request.form['content']\n        if not title:",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "create",
+        "kind": 2,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "def create():\n    if request.method == 'POST':\n        title = request.form['title']\n        content = request.form['content']\n        if not title:\n            flash('Title is required!')\n        else:\n            connection = get_db_connection()\n            connection.execute('INSERT INTO posts (title, content) VALUES (?, ?)',\n                         (title, content))",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "logger",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "logger = logging.getLogger()\n# Function to get a database connection.\n# This function connects to database with the name `database.db`\ndef get_db_connection():\n    connection = sqlite3.connect('database.db')\n    connection.row_factory = sqlite3.Row\n    return connection\n# Function to get a post using its ID\ndef get_post(post_id):\n    connection = get_db_connection()",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app = Flask(__name__)\napp.config['SECRET_KEY'] = 'your secret key'\n# Health check\n@app.route('/healthz')\ndef health():\n    response = app.response_class(\n        response=json.dumps({\"result\": \"OK - healthy\"}),\n        status=200,\n        mimetype='application/json'\n    )",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "app.config['SECRET_KEY']",
+        "kind": 5,
+        "importPath": "app",
+        "description": "app",
+        "peekOfCode": "app.config['SECRET_KEY'] = 'your secret key'\n# Health check\n@app.route('/healthz')\ndef health():\n    response = app.response_class(\n        response=json.dumps({\"result\": \"OK - healthy\"}),\n        status=200,\n        mimetype='application/json'\n    )\n    return response",
+        "detail": "app",
+        "documentation": {}
+    },
+    {
+        "label": "connection",
+        "kind": 5,
+        "importPath": "init_db",
+        "description": "init_db",
+        "peekOfCode": "connection = sqlite3.connect('database.db')\nwith open('schema.sql') as f:\n    connection.executescript(f.read())\ncur = connection.cursor()\ncur.execute(\"INSERT INTO posts (title, content) VALUES (?, ?)\",\n            ('2020 CNCF Annual Report', 'The Cloud Native Computing Foundation (CNCF) annual report for 2020 is now available. The report highlights the growth of the community, events, projects, and more, over the past year.')\n            )\ncur.execute(\"INSERT INTO posts (title, content) VALUES (?, ?)\",\n            ('KubeCon + CloudNativeCon 2021', 'The Cloud Native Computing Foundation flagship conference gathers leading technologists from leading open source and cloud native communities to further the education and advancement of cloud native computing.')\n            )",
+        "detail": "init_db",
+        "documentation": {}
+    },
+    {
+        "label": "cur",
+        "kind": 5,
+        "importPath": "init_db",
+        "description": "init_db",
+        "peekOfCode": "cur = connection.cursor()\ncur.execute(\"INSERT INTO posts (title, content) VALUES (?, ?)\",\n            ('2020 CNCF Annual Report', 'The Cloud Native Computing Foundation (CNCF) annual report for 2020 is now available. The report highlights the growth of the community, events, projects, and more, over the past year.')\n            )\ncur.execute(\"INSERT INTO posts (title, content) VALUES (?, ?)\",\n            ('KubeCon + CloudNativeCon 2021', 'The Cloud Native Computing Foundation flagship conference gathers leading technologists from leading open source and cloud native communities to further the education and advancement of cloud native computing.')\n            )\ncur.execute(\"INSERT INTO posts (title, content) VALUES (?, ?)\",\n            ('Kubernetes v1.20 Release Notes', 'Kubernetes is an open source container orchestration engine for automating deployment, scaling, and management of containerized applications. The open source project is hosted by the Cloud Native Computing Foundation (CNCF).')\n            )",
+        "detail": "init_db",
+        "documentation": {}
+    }
+]
