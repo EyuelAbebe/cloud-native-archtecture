@@ -10,7 +10,7 @@ spec:
   project: default
   source:
     helm:
-      values-staging:
+      valueFiles:
       - values-prod.yaml
     path: helm
     repoURL: https://github.com/EyuelAbebe/cloud-native-archtecture.git
