@@ -4,7 +4,7 @@ metadata:
   labels:
     app: techtrends
   name: techtrends
-  namesapce: {{ .Values.namesapce.name }}
+  namespace: {{ .Values.namespace.name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
