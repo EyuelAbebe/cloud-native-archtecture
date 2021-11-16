@@ -15,5 +15,5 @@ spec:
     path: helm
     repoURL: https://github.com/EyuelAbebe/cloud-native-archtecture.git
     targetRevision: HEAD
-    syncPolicy:
-      automated: {}
+  syncPolicy:
+    automated: {}
