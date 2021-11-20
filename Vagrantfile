@@ -8,6 +8,8 @@ Vagrant.configure("2") do |config|
   ## Set the image version
   # config.vm.box_version = "15.2.31.247"
 
+  config.vm.synced_folder ".", "/vagrant", disabled: false
+  
   # st the static IP for the vagrant box
   config.vm.network "private_network", ip: "192.168.50.4"
   
