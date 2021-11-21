@@ -1,12 +1,19 @@
 apiVersion: app/v1
 kind: Deployment
 metadata:
+  labels:
+    argocd.argoproj.io/instance: techtrends
   name: techtrends
   namespace: {{ .Values.namespace.name }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
+    matchLabels:
+      argocd.argoproj.io/instance: techtrends
   template:
+    metadata:
+      labels:
+        argocd.argoproj.io/instance: techtrends
     spec:
       containers:
       - image: {{ .Values.image.repository }}:{{ .Values.image.tag }}
